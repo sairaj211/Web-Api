@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Dapper;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using MyApp.Business_Core_Domain.Entities;
 using MyApp.Business_Core_Domain.Interfaces;
 using MyApp.Infrastructure.Data;
@@ -15,6 +18,15 @@ namespace MyApp.Infrastructure.Repositories
         public async Task<IEnumerable<EmployeeEntity>> GetEmployees()
         {
             return await dbContext.Employees.ToListAsync();
+        }
+
+        public async Task<IEnumerable<EmployeeEntity>> GetEmployeesSP()
+        {
+            var connetcion = new SqlConnection("Server=DESKTOP-UEPM6FT\\SQLEXPRESS;Database=TestAPIDb;Trusted_Connection=True;TrustServerCertificate=true;MultipleActiveResultSets=true");
+            
+            return await connetcion.QueryAsync<EmployeeEntity>("GetEmployees", commandType: System.Data.CommandType.StoredProcedure);
+            
+           // return await dbContext.Employees.ToListAsync();
         }
 
         public async Task<EmployeeEntity> GetEmployeesByIdAsync(Guid id)

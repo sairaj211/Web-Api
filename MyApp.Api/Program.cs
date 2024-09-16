@@ -1,4 +1,5 @@
 using MyApp.Api;
+using MyApp.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // adding DI
-builder.Services.AddAppDependencyInjection();
+builder.Services.AddAppDependencyInjection(builder.Configuration);
 
 var app = builder.Build();
 

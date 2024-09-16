@@ -18,8 +18,17 @@ namespace MyApp.Api.Controllers
             return Ok(result);
         }
 
+
+        //[HttpGet("")]
+        //public async Task<IActionResult> GetAllEmployeesAsync()
+        //{
+        //    var result = await mediator.Send(new GetAllEmployeesQuery());
+        //    return Ok(result);
+        //}
+
+
         [HttpGet("")]
-        public async Task<IActionResult> GetAllEmployeesAsync()
+        public async Task<IActionResult> GetAllEmployeesAsyncSP()
         {
             var result = await mediator.Send(new GetAllEmployeesQuery());
             return Ok(result);
