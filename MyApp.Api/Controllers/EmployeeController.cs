@@ -19,18 +19,18 @@ namespace MyApp.Api.Controllers
         }
 
 
-        //[HttpGet("")]
-        //public async Task<IActionResult> GetAllEmployeesAsync()
-        //{
-        //    var result = await mediator.Send(new GetAllEmployeesQuery());
-        //    return Ok(result);
-        //}
-
-
         [HttpGet("")]
-        public async Task<IActionResult> GetAllEmployeesAsyncSP()
+        public async Task<IActionResult> GetAllEmployeesAsync()
         {
             var result = await mediator.Send(new GetAllEmployeesQuery());
+            return Ok(result);
+        }
+
+
+        [HttpGet("SP")]
+        public async Task<IActionResult> GetAllEmployeesAsyncSP()
+        {
+            var result = await mediator.Send(new GetAllEmployeesQuerySP());
             return Ok(result);
         }
 

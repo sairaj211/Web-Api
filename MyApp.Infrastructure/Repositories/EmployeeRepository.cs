@@ -7,24 +7,36 @@ using MyApp.Business_Core_Domain.Interfaces;
 using MyApp.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MyApp.Infrastructure.Repositories
 {
-    public class EmployeeRepository(AppDbContext dbContext) : IEmployeeRepository
+    public class EmployeeRepository : IEmployeeRepository
     {
+        private readonly AppDbContext dbContext;
+        private readonly IDbConnection dbConnection;
+
+        public EmployeeRepository(AppDbContext _dbContext, IDbConnection _dbConnection)
+        {
+            dbContext = _dbContext;
+            dbConnection = _dbConnection;
+        }
+
+        // Entity Framework
         public async Task<IEnumerable<EmployeeEntity>> GetEmployees()
         {
             return await dbContext.Employees.ToListAsync();
         }
 
+        // Dapper
         public async Task<IEnumerable<EmployeeEntity>> GetEmployeesSP()
         {
-            var connetcion = new SqlConnection("Server=DESKTOP-UEPM6FT\\SQLEXPRESS;Database=TestAPIDb;Trusted_Connection=True;TrustServerCertificate=true;MultipleActiveResultSets=true");
+            //var connetcion = new SqlConnection("Server=DESKTOP-UEPM6FT\\SQLEXPRESS;Database=TestAPIDb;Trusted_Connection=True;TrustServerCertificate=true;MultipleActiveResultSets=true");
             
-            return await connetcion.QueryAsync<EmployeeEntity>("GetEmployees", commandType: System.Data.CommandType.StoredProcedure);
+            return await dbConnection.QueryAsync<EmployeeEntity>("GetEmployees", commandType: CommandType.StoredProcedure);
             
            // return await dbContext.Employees.ToListAsync();
         }

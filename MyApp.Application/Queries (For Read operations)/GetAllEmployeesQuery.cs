@@ -11,7 +11,7 @@ namespace MyApp.Application.Queries__For_Read_operations_
     {
         public async Task<IEnumerable<EmployeeEntity>> Handle(GetAllEmployeesQuery request, CancellationToken cancellationToken)
         {
-            return await employeeRepository.GetEmployeesSP();
+            return await employeeRepository.GetEmployees();
         }
     }
 }
