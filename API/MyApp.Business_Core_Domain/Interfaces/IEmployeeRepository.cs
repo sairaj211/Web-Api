@@ -10,6 +10,7 @@ namespace MyApp.Business_Core_Domain.Interfaces
     public interface IEmployeeRepository
     {
         Task<IEnumerable<EmployeeEntity>> GetEmployees();
+        //Task<IEnumerable<GetRes>> GetEmployeesMapper();
         Task<IEnumerable<EmployeeEntity>> GetEmployeesSP();
         Task<EmployeeEntity> GetEmployeesByIdAsync(Guid id);
         Task<EmployeeEntity> AddEmployeeAsync(EmployeeEntity entity);

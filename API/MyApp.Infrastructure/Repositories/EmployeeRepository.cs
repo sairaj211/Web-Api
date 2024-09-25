@@ -36,7 +36,7 @@ namespace MyApp.Infrastructure.Repositories
         {
             //var connetcion = new SqlConnection("Server=DESKTOP-UEPM6FT\\SQLEXPRESS;Database=TestAPIDb;Trusted_Connection=True;TrustServerCertificate=true;MultipleActiveResultSets=true");
             
-            return await dbConnection.QueryAsync<EmployeeEntity>("GetEmployees", commandType: CommandType.StoredProcedure);
+            return await dbConnection.QueryAsync<EmployeeEntity>("GetAllEmployees", commandType: CommandType.StoredProcedure);
             
            // return await dbContext.Employees.ToListAsync();
         }
@@ -62,7 +62,8 @@ namespace MyApp.Infrastructure.Repositories
 
             if(employee != null)
             {
-                employee.Name = entity.Name;
+                employee.FIrstName = entity.FIrstName;
+                employee.LastName = entity.LastName;
                 employee.Email = entity.Email;
                 employee.Phone = entity.Phone;
                 await dbContext.SaveChangesAsync();

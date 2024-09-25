@@ -22,7 +22,7 @@ namespace MyApp.Api.Controllers
         [HttpGet("")]
         public async Task<IActionResult> GetAllEmployeesAsync()
         {
-            var result = await mediator.Send(new GetAllEmployeesQuery());
+            var result = await mediator.Send(new GetAllEmployeesMapperExample());
             return Ok(result);
         }
 
