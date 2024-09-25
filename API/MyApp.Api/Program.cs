@@ -24,6 +24,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+//Cross-Origin Request Blocked
+app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+
+// in production level application we only allow any origins
+
 app.UseAuthorization();
 
 app.MapControllers();

@@ -15,7 +15,7 @@ namespace MyApp.Application.Mapping
         {
             CreateMap<EmployeeEntity, GetUserResponse>()
                 .ForMember(dest => dest.FullName,
-                    src => src.MapFrom(x => x.FIrstName + " " + x.LastName))
+                    src => src.MapFrom(x => x.FirstName + " " + x.LastName))
                 .ForMember(dest => dest.Email,
                     src => src.MapFrom(x => x.Email))
                 .ForMember(dest => dest.Phone,

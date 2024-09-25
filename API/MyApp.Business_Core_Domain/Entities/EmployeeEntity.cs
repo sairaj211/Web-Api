@@ -9,7 +9,7 @@ namespace MyApp.Business_Core_Domain.Entities
     public class EmployeeEntity
     {
         public Guid Id { get; set; }
-        public string? FIrstName { get; set; }
+        public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? Email { get; set; }
         public string Phone { get; set; } = null!;

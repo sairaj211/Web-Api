@@ -62,7 +62,7 @@ namespace MyApp.Infrastructure.Repositories
 
             if(employee != null)
             {
-                employee.FIrstName = entity.FIrstName;
+                employee.FirstName = entity.FirstName;
                 employee.LastName = entity.LastName;
                 employee.Email = entity.Email;
                 employee.Phone = entity.Phone;

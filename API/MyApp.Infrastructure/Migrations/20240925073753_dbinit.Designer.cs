@@ -12,7 +12,7 @@ using MyApp.Infrastructure.Data;
 namespace MyApp.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240924104851_dbinit")]
+    [Migration("20240925073753_dbinit")]
     partial class dbinit
     {
         /// <inheritdoc />
@@ -34,7 +34,7 @@ namespace MyApp.Infrastructure.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FIrstName")
+                    b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
