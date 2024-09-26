@@ -25,7 +25,9 @@
             </div>
 
             <div class="py-4">
-                <button type="submit" class="bg-slate-800 text-white px-4 py-2 rounded-sm w-full">Add</button>
+                <button type="submit" class="bg-slate-800 text-white px-4 py-2 rounded-sm w-full">
+                    {{isEditMode ? 'Update' : 'Add'}}
+                </button>
             </div>
         </form>
     </div>
@@ -36,7 +38,7 @@
             @if(employees.length > 0){
                 <ul>
                     @for (item of employees; track $index) {
-                        <li class="p-2 bg-slate-100 border-b-2 border-slate-950">
+                        <li class="p-2 bg-slate-100 border-b-2 border-slate-950" (click)="OnEdit(item)">
                             <span class="font-light text-3xl">
                                 {{item.firstName}} {{item.lastName}}
                             </span>
