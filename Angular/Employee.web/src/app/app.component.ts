@@ -82,7 +82,10 @@ export class AppComponent {
         this.employees$ = this.GetEmployees();
       }
     });
+  }
 
+  OnCancelEdit() {
+    this.ResetForm();
   }
 
   private GetEmployees(): Observable<Employee[]>{
