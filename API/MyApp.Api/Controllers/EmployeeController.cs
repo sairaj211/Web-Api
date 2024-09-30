@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using MyApp.Application.Commands;
 using MyApp.Application.Commands__For_Write_operations_;
@@ -9,12 +10,30 @@ namespace MyApp.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EmployeeController(IMediator mediator) : ControllerBase
+    public class EmployeeController : ControllerBase
     {
+        private readonly IMediator _mediator;
+        private readonly IValidator<EmployeeEntity> _validator;
+
+        public EmployeeController(IMediator mediator, IValidator<EmployeeEntity> validator)
+        {
+            _mediator = mediator; 
+            _validator = validator;
+        }
+
         [HttpPost("")]
         public async Task<IActionResult> AddEmployeeAsync([FromBody] EmployeeEntity employee)
         {
-            var result = await mediator.Send(new AddEmployeeCommand(employee));
+            //var result = await _mediator.Send(new AddEmployeeCommand(employee));
+            //return Ok(result);
+
+            var validationResult = await _validator.ValidateAsync(employee);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
+
+            var result = await _mediator.Send(new AddEmployeeCommand(employee));   
             return Ok(result);
         }
 
@@ -22,8 +41,8 @@ namespace MyApp.Api.Controllers
         [HttpGet("")]
         public async Task<IActionResult> GetAllEmployeesAsync()
         {
-            var result = await mediator.Send(new GetAllEmployeesMapperExample());
-            //var result = await mediator.Send(new GetAllEmployeesQuery());
+            //var result = await _mediator.Send(new GetAllEmployeesMapperExample());
+            var result = await _mediator.Send(new GetAllEmployeesQuery());
             return Ok(result);
         }
 
@@ -31,7 +50,7 @@ namespace MyApp.Api.Controllers
         [HttpGet("SP")]
         public async Task<IActionResult> GetAllEmployeesAsyncSP()
         {
-            var result = await mediator.Send(new GetAllEmployeesQuerySP());
+            var result = await _mediator.Send(new GetAllEmployeesQuerySP());
             return Ok(result);
         }
 
@@ -39,7 +58,7 @@ namespace MyApp.Api.Controllers
         [HttpGet("{employeeId}")]
         public async Task<IActionResult> GetAllEmployeesAsync([FromRoute] Guid employeeId)
         {
-            var result = await mediator.Send(new GetEmployeeByIdQuery(employeeId));
+            var result = await _mediator.Send(new GetEmployeeByIdQuery(employeeId));
             if(result == null)
             {
                 return BadRequest();
@@ -50,18 +69,33 @@ namespace MyApp.Api.Controllers
         [HttpPut("{employeeId}")]
         public async Task<IActionResult> UpdateEmployeesAsync([FromRoute] Guid employeeId, [FromBody] EmployeeEntity employeeEntity)
         {
-            var result = await mediator.Send(new UpdateEmployeeCommand(employeeId, employeeEntity));
-            if (result == null)
+            //var result = await _mediator.Send(new UpdateEmployeeCommand(employeeId, employeeEntity));
+            //if (result == null)
+            //{
+            //    return BadRequest();
+            //}
+            //return Ok(result);
+
+            if(employeeId != Guid.Empty)
             {
-                return BadRequest();
+                return BadRequest("Employee ID is required");
             }
-            return Ok(result);
+
+            var validationResult = await _validator.ValidateAsync(employeeEntity);
+            if(!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
+
+            var result = await _mediator.Send(new UpdateEmployeeCommand(employeeId, employeeEntity));
+
+            return result != null ? Ok("Employee updated successfully") : NotFound("Employee not found");
         }
 
         [HttpDelete("{employeeId}")]
         public async Task<IActionResult> DeleteEmployeesAsync([FromRoute] Guid employeeId)
         {
-            var result = await mediator.Send(new DeleteEmployeeCommand(employeeId));
+            var result = await _mediator.Send(new DeleteEmployeeCommand(employeeId));
             if (result == null)
             {
                 return BadRequest();

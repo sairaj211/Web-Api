@@ -4,24 +4,47 @@
             <h1 class="py-10 font-sans text-5xl">
                 Employee Details
             </h1>
+            
+            <!-- Displaying validation errors -->
+            <div *ngIf="validationErrors.length > 0" class="mb-4">
+                <ul class="text-red-500">
+                    <li *ngFor="let error of validationErrors">{{ error }}</li>
+                </ul>
+            </div>
+
             <div class="mt-2">
                 <label for="firstName" class="font-bold">First Name</label>
                 <input type="text" class="w-full p-2 border-2 rounded-sm mt-2" formControlName="firstName">
+                <div *ngIf="employeeForm.get('firstName')?.invalid && (employeeForm.get('firstName')?.touched || employeeForm.get('firstName')?.dirty)">
+                    <small class="text-red-500">First name is required.</small>
+                </div>
             </div>
 
             <div class="mt-2">
                 <label for="lastName" class="font-bold">Last Name</label>
                 <input type="text" class="w-full p-2 border-2 rounded-sm mt-2" formControlName="lastName">
+                <div *ngIf="employeeForm.get('lastName')?.invalid && (employeeForm.get('lastName')?.touched || employeeForm.get('lastName')?.dirty)">
+                    <small class="text-red-500">Last name is required.</small>
+                </div>
             </div>
 
             <div class="mt-2">
                 <label for="email" class="font-bold">Email</label>
                 <input type="email" class="w-full p-2 border-2 rounded-sm mt-2" formControlName="email">
+                <div *ngIf="employeeForm.get('email')?.invalid && (employeeForm.get('email')?.touched || employeeForm.get('email')?.dirty)">
+                    <small class="text-red-500" *ngIf="employeeForm.get('email')?.errors?.['required']">Email is required.</small>
+                    <small class="text-red-500" *ngIf="employeeForm.get('email')?.errors?.['email']">Invalid email format.</small>
+                </div>
             </div>
 
             <div class="mt-2">
                 <label for="phone" class="font-bold">Phone</label>
                 <input type="text" class="w-full p-2 border-2 rounded-sm mt-2" formControlName="phone">
+                <div *ngIf="employeeForm.get('phone')?.invalid && (employeeForm.get('phone')?.touched || employeeForm.get('phone')?.dirty)">
+                    <small class="text-red-500" *ngIf="employeeForm.get('phone')?.errors?.['required']">Phone number is required.</small>
+                    <small class="text-red-500" *ngIf="employeeForm.get('phone')?.errors?.['minlength']">Phone number must be at least 10 digits long.</small>
+                    <small class="text-red-500" *ngIf="employeeForm.get('phone')?.errors?.['pattern']">Phone number must contain only digits.</small>
+                </div>
             </div>
 
             <div class="py-4 flex justify-between gap-4">

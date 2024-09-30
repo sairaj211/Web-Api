@@ -84,5 +84,39 @@ namespace MyApp.Infrastructure.Repositories
 
             return false;
         }
+
+
+        // EF
+        /*
+        public async Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken)
+        {
+            return await dbContext.Employees.AnyAsync(x => x.Email == email, cancellationToken);
+        }
+
+        public async Task<bool> PhoneExistsAsync(string phone, CancellationToken cancellationToken)
+        {
+            return await dbContext.Employees.AnyAsync(x => x.Phone == phone, cancellationToken);    
+        }
+        */
+
+
+        // Dapper
+        public async Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken)
+        {
+            var query = "CheckEmailExists";
+            var parameters = new {Email = email};
+
+            var count = await dbConnection.ExecuteScalarAsync<int>(query, parameters, commandType:CommandType.StoredProcedure);
+            return count > 0;
+        }
+
+        public async Task<bool> PhoneExistsAsync(string phome, CancellationToken cancellationToken)
+        {
+            var query = "CheckPhoneExists";
+            var parameters = new { Phone = phome };
+
+            var count = await dbConnection.ExecuteScalarAsync<int>(query, parameters, commandType: CommandType.StoredProcedure);
+            return count > 0;
+        }
     }
 }
