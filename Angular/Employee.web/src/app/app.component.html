@@ -59,12 +59,10 @@
     </div>
 
     <div class="overflow-auto w-[50%]">
-        @if(employees$ | async; as employees)
-        {
-            @if(employees.length > 0){
+        <ng-container *ngIf="employees$ | async as employees">
+            <ng-container *ngIf="employees.length > 0; else noEmployees">
                 <ul>
-                    @for (item of employees; track $index) {
-                        <li class="p-2 bg-slate-100 border-b-2 border-slate-950" (click)="OnEdit(item)">
+                    <li *ngFor="let item of employees; trackBy: trackByFn" class="p-2 bg-slate-100 border-b-2 border-slate-950" (click)="OnEdit(item)">
                             <span class="font-light text-3xl">
                                 {{item.firstName}} {{item.lastName}}
                             </span>
@@ -102,12 +100,11 @@
                             </div>
 
                         </li>
-                    }
-                </ul>
-            }
-            @else {
-                <p>No Employees found!</p>
-            }
-        }
+                    </ul>
+                </ng-container>
+                <ng-template #noEmployees>
+                    <p>No Employees found!</p>
+                </ng-template>
+            </ng-container>
     </div>
 </div>

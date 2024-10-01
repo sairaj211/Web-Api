@@ -101,19 +101,25 @@ namespace MyApp.Infrastructure.Repositories
 
 
         // Dapper
-        public async Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken)
+        public async Task<bool> EmailExistsAsync(string email, Guid currentEmployeeId, CancellationToken cancellationToken)
         {
             var query = "CheckEmailExists";
-            var parameters = new {Email = email};
+            var parameters = new {
+                Email = email,
+                EmployeeId = currentEmployeeId,
+            };
 
             var count = await dbConnection.ExecuteScalarAsync<int>(query, parameters, commandType:CommandType.StoredProcedure);
             return count > 0;
         }
 
-        public async Task<bool> PhoneExistsAsync(string phome, CancellationToken cancellationToken)
+        public async Task<bool> PhoneExistsAsync(string phone, Guid currentEmployeeId, CancellationToken cancellationToken)
         {
             var query = "CheckPhoneExists";
-            var parameters = new { Phone = phome };
+            var parameters = new { 
+                Phone = phone,
+                EmployeeId = currentEmployeeId,
+            };
 
             var count = await dbConnection.ExecuteScalarAsync<int>(query, parameters, commandType: CommandType.StoredProcedure);
             return count > 0;

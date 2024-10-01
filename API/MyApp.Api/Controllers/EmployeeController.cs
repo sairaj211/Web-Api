@@ -24,13 +24,15 @@ namespace MyApp.Api.Controllers
         [HttpPost("")]
         public async Task<IActionResult> AddEmployeeAsync([FromBody] EmployeeEntity employee)
         {
-            //var result = await _mediator.Send(new AddEmployeeCommand(employee));
-            //return Ok(result);
-
             var validationResult = await _validator.ValidateAsync(employee);
             if (!validationResult.IsValid)
             {
-                return BadRequest(validationResult.Errors);
+                // Create a dictionary to hold validation errors
+                var errors = validationResult.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray());
+
+                return BadRequest(new { errors });
             }
 
             var result = await _mediator.Send(new AddEmployeeCommand(employee));   
@@ -69,27 +71,29 @@ namespace MyApp.Api.Controllers
         [HttpPut("{employeeId}")]
         public async Task<IActionResult> UpdateEmployeesAsync([FromRoute] Guid employeeId, [FromBody] EmployeeEntity employeeEntity)
         {
-            //var result = await _mediator.Send(new UpdateEmployeeCommand(employeeId, employeeEntity));
-            //if (result == null)
-            //{
-            //    return BadRequest();
-            //}
-            //return Ok(result);
-
-            if(employeeId != Guid.Empty)
+            if(employeeId == Guid.Empty)
             {
                 return BadRequest("Employee ID is required");
             }
 
+            employeeEntity.Id = employeeId;
+
             var validationResult = await _validator.ValidateAsync(employeeEntity);
-            if(!validationResult.IsValid)
+            if (!validationResult.IsValid)
             {
-                return BadRequest(validationResult.Errors);
+                // Create a dictionary to hold validation errors
+                var errors = validationResult.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray());
+
+                return BadRequest(new { errors });
             }
 
             var result = await _mediator.Send(new UpdateEmployeeCommand(employeeId, employeeEntity));
 
-            return result != null ? Ok("Employee updated successfully") : NotFound("Employee not found");
+            return result != null
+                ? Ok(new { message = "Employee updated successfully" })
+                : NotFound(new { message = "Employee not found" });
         }
 
         [HttpDelete("{employeeId}")]

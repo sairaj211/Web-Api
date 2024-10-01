@@ -1,7 +1,7 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { first, Observable } from 'rxjs';
+import { first, Observable, BehaviorSubject } from 'rxjs';
 import { Employee } from '../models/employee.model';
 import { AsyncPipe } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -37,6 +37,10 @@ export class AppComponent {
   currentEmployeeId : string | null = null;
   validationErrors: string[] = [];
 
+  trackByFn(index: number, item: any): number {
+    return item.id; // or any unique identifier for your items
+  }
+
   OnFormSubmit(){
     const addEmployeeRequest ={
       firstName : this.employeeForm.value.firstName,
@@ -45,20 +49,25 @@ export class AppComponent {
       phone : this.employeeForm.value.phone,
     }
 
+    console.log('Request Body:', addEmployeeRequest); // Log the request body
+
     const requestBody = this.isEditMode && this.currentEmployeeId
       ?  this.http.put(`https://localhost:7014/api/Employee/${this.currentEmployeeId}`, addEmployeeRequest)
       : this.http.post('https://localhost:7014/api/Employee', addEmployeeRequest);
 
+     // console.log(this.currentEmployeeId);
+
       requestBody.subscribe({
         next: (value) => {
           console.log(value);
+          this.validationErrors = [];
           this.ResetForm();
           this.employees$ = this.GetEmployees();
-          this.validationErrors = [];
         },
         error: (err) => {
-          if (err.status === 400) {
+          if (err.status === 400 && err.error && err.error.errors) {
             this.HandleValidationErrors(err.error.errors);
+            console.log(this.validationErrors);
           }
           else{
             console.log("An error occured: ", err);
@@ -69,8 +78,10 @@ export class AppComponent {
 
 
   OnEdit(employee : Employee){
+    console.log('Editing Employee ID:', employee.id);
     this.isEditMode = true;
     this.currentEmployeeId = employee.id;
+
     this.employeeForm.setValue({
       firstName: employee.firstName,
       lastName: employee.lastName,
@@ -79,15 +90,23 @@ export class AppComponent {
     });
   }
 
-  OnDelete(id: string){
-    this.http.delete(`https://localhost:7014/api/Employee/${id}`)
-    .subscribe({
-      next: (value) =>{
-        alert('Item Deleted!');
-        this.employees$ = this.GetEmployees();
-      }
-    });
-  }
+  OnDelete(id: string) {
+    // Confirm deletion (optional)
+    if (confirm('Are you sure you want to delete this employee?')) {
+        this.http.delete(`https://localhost:7014/api/Employee/${id}`)
+        .subscribe({
+            next: (value) => {
+                alert('Item Deleted!');
+                this.ResetForm();
+                this.employees$ = this.GetEmployees(); // Refresh employee list
+            },
+            error: (err) => {
+                console.error('Delete error', err);
+                alert('Failed to delete the employee.');
+            }
+        });
+    }
+}
 
   OnCancelEdit() {
     this.ResetForm();

@@ -17,7 +17,7 @@ namespace MyApp.Business_Core_Domain.Interfaces
         Task<EmployeeEntity> UpdateEmployeeAsync(Guid employeeID, EmployeeEntity entity);
         Task<bool> DeleteEmployeeAsync(Guid employeeID);
 
-        Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken);
-        Task<bool> PhoneExistsAsync(string phone, CancellationToken cancellationToken);
+        Task<bool> EmailExistsAsync(string email, Guid currentEmployeeId,CancellationToken cancellationToken);
+        Task<bool> PhoneExistsAsync(string phone, Guid currentEmployeeId, CancellationToken cancellationToken);
     }
 }
