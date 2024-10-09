@@ -90,12 +90,13 @@ export class AppComponent {
     });
   }
 
-  OnDelete(id: string) {
+  OnDelete(id: string, event: MouseEvent) {
     // Confirm deletion (optional)
+    event.stopPropagation();
     if (confirm('Are you sure you want to delete this employee?')) {
         this.http.delete(`https://localhost:7014/api/Employee/${id}`)
         .subscribe({
-            next: (value) => {
+            next: () => {
                 alert('Item Deleted!');
                 this.ResetForm();
                 this.employees$ = this.GetEmployees(); // Refresh employee list
